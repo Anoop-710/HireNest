@@ -1,5 +1,10 @@
 import { Response, Request } from "express";
 import User from "../models/auth.model";
+import cloudinary from "../lib/cloudinary";
+
+interface UpdatedData {
+  [key: string]: any; // allows any key with any value, or you can specify specific fields and types
+}
 
 type AuthenticatedRequest = Request & {
   user?: typeof User.prototype;
@@ -51,6 +56,57 @@ export const getUserProfile = async (
     res.json(user);
   } catch (error) {
     console.error(`Error in getUserProfile ${(error as Error).message}`);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateUserProfile = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const allowedFields = [
+      "name",
+      "headline",
+      "profilePicture",
+      "coverPicture",
+      "headline",
+      "about",
+      "location",
+      "experience",
+      "education",
+      "socials",
+    ];
+
+    const updatedData: UpdatedData = {};
+
+    for (const field of allowedFields) {
+      if (req.body[field]) {
+        updatedData[field] = req.body[field];
+      }
+    }
+
+    // Profile picture and cover picture
+
+    if (req.body.profilePicture) {
+      const result = await cloudinary.uploader.upload(req.body.profilePicture);
+      updatedData.profilePicture = result.secure_url;
+    }
+
+    if (req.body.coverPicture) {
+      const result = await cloudinary.uploader.upload(req.body.coverPicture);
+      updatedData.coverPicture = result.secure_url;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updatedData },
+      { new: true }
+    ).select("-password");
+
+    res.json(user);
+  } catch (error) {
+    console.error(`Error in updateUserProfile ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });
   }
 };
