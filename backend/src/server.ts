@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./lib/db";
 import authRoutes from "./routes/auth.route";
+import userRoutes from "./routes/user.route";
+
 import cookieParser from "cookie-parser";
 dotenv.config();
 
@@ -12,7 +14,7 @@ app.use(express.json()); // parse JSON request bodies
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes);
-
+app.use("/api/v1/user", userRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   connectDB();
