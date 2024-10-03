@@ -13,4 +13,5 @@ router.get("/:username", protectRoute, getUserProfile);
 
 // update user profile
 router.put("/:username", protectRoute, updateUserProfile);
+
 export default router;

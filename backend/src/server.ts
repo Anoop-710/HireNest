@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./lib/db";
 import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
+import postRoutes from "./routes/post.route";
 
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -15,6 +16,9 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
+
+//post routes
+app.use("/api/v1/posts", postRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   connectDB();
