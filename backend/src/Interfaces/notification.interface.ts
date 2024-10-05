@@ -6,6 +6,4 @@ export interface INotification {
   relatedUser?: mongoose.Types.ObjectId;
   relatedPost?: mongoose.Types.ObjectId;
   read?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
