@@ -15,7 +15,7 @@ export const getFeedPosts = async (
 ): Promise<void> => {
   try {
     const posts = await Post.find({
-      author: { $in: req.user.connections },
+      author: { $in: [...req.user.following, req.user._id] },
     })
       .populate("author", "name, username, profilePicture headline")
       .populate("comments.user", "name, profilePicture")
@@ -52,7 +52,7 @@ export const createPost = async (
 
     // save post to database
     await newPost.save();
-    res.json(201).json(newPost);
+    res.status(201).json(newPost);
   } catch (error) {
     console.error(`Error in createPost ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });
@@ -64,7 +64,7 @@ export const deletePost = async (
   res: Response
 ): Promise<void> => {
   try {
-    const postId = req.params.id;
+    const postId = req.params.postId;
     const userId = req.user._id;
 
     const post = await Post.findById(postId);
@@ -181,19 +181,24 @@ export const likePost = async (
     const post = await Post.findById(postId);
     const userId = req.user?._id;
 
-    if (post?.likes.includes(userId)) {
-      // remove like
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return; // Ensures void is returned
+    }
+
+    if (post.likes.includes(userId)) {
+      // Remove like
       post.likes = post.likes.filter(
         (id) => id.toString() !== userId.toString()
       );
     } else {
-      // add like
-      post?.likes.push(userId);
+      // Add like
+      post.likes.push(userId);
 
-      // create notification if liked user is not the post owner
-      if (post?.author.toString() !== userId.toString()) {
+      // Create notification if liked user is not the post owner
+      if (post.author.toString() !== userId.toString()) {
         const newNotification = new Notification({
-          recipient: post?.author,
+          recipient: post.author,
           type: "like",
           relatedUser: userId,
           relatedPost: postId,
@@ -201,11 +206,17 @@ export const likePost = async (
 
         await newNotification.save();
       }
-
-      await post?.save();
     }
+
+    // Save post after modifying likes
+    await post.save();
+
+    // Send updated likes back to the client
+    res.status(200).json({ likes: post.likes });
+    return; // Ensures void is returned
   } catch (error) {
-    console.error(`Error in likePost ${(error as Error).message}`);
+    console.error(`Error in likePost: ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });
+    return; // Ensures void is returned
   }
 };

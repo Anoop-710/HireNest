@@ -55,21 +55,23 @@ const LoginForm: React.FC = () => {
   const isLoading = status === "pending";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md ">
       <input
         type="text"
-        placeholder="    Username"
+        placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="w-full h-12 border rounded-md "
+        className="w-full   
+ border rounded-md px-4 py-2"
         required
       />
       <input
         type="password"
-        placeholder="    Password"
+        placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full h-12 border rounded-md"
+        className="w-full   
+ border rounded-md px-4 py-2"
         required
       />
 
