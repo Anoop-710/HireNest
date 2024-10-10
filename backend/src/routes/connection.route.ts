@@ -13,8 +13,8 @@ import {
 const router = Router();
 
 router.post("/request/:userId", protectRoute, sendConnectionRequest);
-router.post("/accept/:userId", protectRoute, acceptConnectionRequest);
-router.post("/reject/:userId", protectRoute, rejectConnectionRequest);
+router.put("/accept/:requestId", protectRoute, acceptConnectionRequest);
+router.put("/reject/:requestId", protectRoute, rejectConnectionRequest);
 
 // get all connection requests for current user
 router.get("/requests", protectRoute, getConnectionRequests);

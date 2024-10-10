@@ -3,10 +3,12 @@ import Layout from "./components/layout/Layout";
 import Homepage from "./pages/Homepage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from "./pages/auth/SignUpPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import toast, { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../lib/axios";
 import { AxiosError } from "axios";
+import NetworkPage from "./pages/ConnectionPage";
 
 function App() {
   const { data: authUser, isLoading } = useQuery({
@@ -51,6 +53,25 @@ function App() {
             path="/login"
             element={!authUser ? <LoginPage /> : <Navigate to="/" />}
           />
+
+          <Route
+            path="/notifications"
+            element={
+              authUser ? <NotificationsPage /> : <Navigate to={"/login"} />
+            }
+          />
+          <Route
+            path="/network"
+            element={authUser ? <NetworkPage /> : <Navigate to={"/login"} />}
+          />
+          {/*  <Route
+            path="/post/:postId"
+            element={authUser ? <PostPage /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/profile/:username"
+            element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />}
+          /> */}
         </Routes>
 
         <Toaster />

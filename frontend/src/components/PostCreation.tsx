@@ -90,9 +90,7 @@ const PostCreation = ({ user }: PostCreationProps) => {
 
     if (file) {
       readFileAsDataURL(file).then((preview) => {
-        if (typeof preview !== "string") {
-          setImagePreview(preview);
-        }
+        setImagePreview(preview);
       });
     } else {
       setImagePreview(null);

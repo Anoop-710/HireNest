@@ -15,12 +15,13 @@ export const getFeedPosts = async (
 ): Promise<void> => {
   try {
     const posts = await Post.find({
-      author: { $in: [...req.user.following, req.user._id] },
+      author: { $in: [...req.user.connections, req.user._id] },
     })
-      .populate("author", "name, username, profilePicture headline")
-      .populate("comments.user", "name, profilePicture")
+      .populate("author", "name username profilePicture headline")
+      .populate("comments.user", "name profilePicture")
       .sort({ createdAt: -1 });
-    res.json(posts);
+
+    res.status(200).json(posts);
   } catch (error) {
     console.error(`Error in getFeedPosts ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });
@@ -50,9 +51,16 @@ export const createPost = async (
       });
     }
 
-    // save post to database
+    // Save post to database
     await newPost.save();
-    res.status(201).json(newPost);
+
+    // Populate the author field
+    const populatedPost = await Post.findById(newPost._id).populate(
+      "author",
+      "name username profilePicture headline"
+    );
+
+    res.status(201).json(populatedPost);
   } catch (error) {
     console.error(`Error in createPost ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });

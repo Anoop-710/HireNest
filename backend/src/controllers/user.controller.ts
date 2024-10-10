@@ -28,7 +28,7 @@ export const getSuggestedConnection = async (
       },
     })
       .select("name username profilePicture headline")
-      .limit(4);
+      .limit(10);
 
     res.json(suggestedUser);
   } catch (error) {

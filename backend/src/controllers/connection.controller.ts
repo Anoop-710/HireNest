@@ -58,9 +58,14 @@ export const acceptConnectionRequest = async (
 ): Promise<void> => {
   try {
     const { requestId } = req.params;
-    const userId = req.user?._id;
+    const userId = req.user._id;
 
-    const request = await ConnectionRequest.findById({ requestId }).populate([
+    if (!requestId) {
+      res.status(400).json({ message: "Invalid request ID" });
+      return;
+    }
+
+    const request = await ConnectionRequest.findById(requestId).populate([
       { path: "sender", select: "name email username" },
       { path: "recipient", select: "name email username" },
     ]);
@@ -70,7 +75,6 @@ export const acceptConnectionRequest = async (
       return;
     }
 
-    // check if the req is for the current user
     if (request.recipient._id.toString() !== userId.toString()) {
       res.status(403).json({ message: "Unauthorized" });
       return;
@@ -80,12 +84,12 @@ export const acceptConnectionRequest = async (
       res
         .status(400)
         .json({ message: "Connection request has already been processed" });
+      return;
     }
 
     request.status = "accepted";
     await request.save();
 
-    // update both the sender's and recipient's connection lists by adding each other's user ID
     await User.findByIdAndUpdate(request.sender._id, {
       $addToSet: {
         connections: userId,
@@ -106,12 +110,12 @@ export const acceptConnectionRequest = async (
 
     await notification.save();
 
+    // Send success response
     res
       .status(200)
       .json({ message: "Connection request accepted successfully" });
 
-    // send notification email
-
+    // Asynchronous email notification
     const sender = request.sender as User;
     const recipient = request.recipient as User;
 
@@ -127,11 +131,11 @@ export const acceptConnectionRequest = async (
         recipientName,
         profileUrl
       );
-    } catch (error) {
+    } catch (emailError) {
       console.error(
-        `Error in sendConnectionAcceptedEmail ${(error as Error).message}`
+        `Error in sendConnectionAcceptedEmail ${(emailError as Error).message}`
       );
-      res.status(500).json({ message: "Internal server error" });
+      // No response here since it's already sent
     }
   } catch (error) {
     console.error(
@@ -148,6 +152,11 @@ export const rejectConnectionRequest = async (
   try {
     const { requestId } = req.params;
     const userId = req.user._id;
+
+    if (!requestId) {
+      res.status(400).json({ message: "Invalid request ID" });
+      return;
+    }
 
     const request = await ConnectionRequest.findById(requestId);
 
@@ -258,6 +267,7 @@ export const getConnectionStatus = async (
 
     if (currentUser.connections.includes(targetUserId)) {
       res.status(200).json({ status: "connected" });
+      return;
     }
 
     // query checks for any pending connection requests between the current user and the target user.

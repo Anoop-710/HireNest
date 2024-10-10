@@ -9,10 +9,8 @@ import RecommendedUser from "../components/RecommendedUser";
 import AuthUser from "../../interfaces/UserInterface";
 import IPost from "../../interfaces/PostInterface";
 
-interface RecommendedUser {
-  id: string;
-  username: string;
-  // Add other properties that you expect from recommended users
+interface RecommendedUser extends AuthUser {
+  _id: string;
 }
 
 const Homepage: React.FC = () => {
@@ -31,10 +29,10 @@ const Homepage: React.FC = () => {
     },
   });
 
-  const { data: recommendedUsers } = useQuery<RecommendedUser[] | undefined>({
+  const { data: recommendedUsers } = useQuery<RecommendedUser[]>({
     queryKey: ["recommendedUsers"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/users/suggestions");
+      const res = await axiosInstance.get("/user/suggestions");
       return res.data;
     },
   });
@@ -56,7 +54,7 @@ const Homepage: React.FC = () => {
         {authUser && <Sidebar user={authUser} />}
       </div>
 
-      <div className="col-span-1 lg:col-span-2 order-first lg:order-none">
+      <div className="col-span-1 lg:col-span-2 order-first lg:order-none mt-12">
         {authUser ? <PostCreation user={authUser} /> : null}
 
         {posts?.map(
@@ -79,8 +77,8 @@ const Homepage: React.FC = () => {
         )}
       </div>
 
-      {/* {recommendedUsers?.length > 0 && (
-        <div className="col-span-1 lg:col-span-1 hidden lg:block">
+      {(recommendedUsers?.length ?? 0) > 0 && (
+        <div className="col-span-1 lg:col-span-1 hidden lg:block mt-12">
           <div className="bg-secondary rounded-lg shadow p-4">
             <h2 className="font-semibold mb-4">People you may know</h2>
             {recommendedUsers?.map((user) => (
@@ -88,7 +86,7 @@ const Homepage: React.FC = () => {
             ))}
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

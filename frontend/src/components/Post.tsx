@@ -16,6 +16,7 @@ import {
 import IPost from "../../interfaces/PostInterface";
 import PostAction from "./PostAction";
 import { v4 as uuidv4 } from "uuid";
+import { formatDistanceToNow } from "date-fns";
 
 interface PostProps {
   post: IPost;
@@ -23,6 +24,8 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post }) => {
+  console.log(post);
+
   const { data: authUser } = useQuery<AuthUser>({ queryKey: ["authUser"] });
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
@@ -117,6 +120,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
       ]);
     }
   };
+
   return (
     <div className="bg-secondary rounded-lg shadow mb-4">
       <div className="p-4">
@@ -132,10 +136,16 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
             <div>
               <Link to={`/profile/${post?.author?.username}`}>
-                <h3 className="font-semibold">{post.author.name}</h3>
+                <h3 className="font-semibold">
+                  {post.author ? post.author.name : "Unknown Author"}
+                </h3>
               </Link>
-              <p className="text-xs text-info">{post.author.headline}</p>
-              {/* Todo post created at field */}
+              <p className="text-xs text-info">{post.author?.headline}</p>
+              <p className="text-xs text-info">
+                {formatDistanceToNow(new Date(post.createdAt), {
+                  addSuffix: true,
+                })}
+              </p>
             </div>
           </div>
 
@@ -202,7 +212,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
                       {comment.user.name}
                     </span>
                     <span className="text-xs text-info">
-                      {/* {formatDistanceToNow(new Date(comment.createdAt))} */}
+                      {formatDistanceToNow(new Date(comment.createdAt))}
                     </span>
                   </div>
                   <p>{comment.content}</p>

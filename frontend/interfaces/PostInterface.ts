@@ -1,6 +1,7 @@
 import AuthUser from "./UserInterface";
 
 interface IPost {
+  createdAt: Date;
   _id: string;
   author: AuthUser;
 
