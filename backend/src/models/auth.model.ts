@@ -1,6 +1,31 @@
 import mongoose from "mongoose";
+import { User } from "../Interfaces/user.interface";
 
-const userSchema = new mongoose.Schema(
+const experienceSchema = new mongoose.Schema({
+  title: String,
+  company: String,
+  location: String,
+  startDate: Date,
+  endDate: Date,
+  description: String,
+});
+
+const educationSchema = new mongoose.Schema({
+  school: String,
+  fieldOfStudy: String,
+  startYear: Number,
+  endYear: Number,
+});
+
+const socialsSchema = new mongoose.Schema({
+  facebook: String,
+  instagram: String,
+  twitter: String,
+  linkedin: String,
+  github: String,
+});
+
+const userSchema = new mongoose.Schema<User>(
   {
     name: {
       type: String,
@@ -32,25 +57,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "HireNest user",
     },
-    skills: [String],
-    experience: [
-      {
-        title: String,
-        company: String,
-        location: String,
-        startDate: Date,
-        endDate: Date,
-        description: String,
-      },
-    ],
-    education: [
-      {
-        school: String,
-        degree: String,
-        startYear: Number,
-        endYear: Number,
-      },
-    ],
+    location: {
+      type: String,
+      default: "Earth",
+    },
+    about: {
+      type: String,
+      default: "",
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    experience: [experienceSchema],
+    education: [educationSchema],
     connections: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -69,17 +89,11 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    socials: {
-      facebook: String,
-      instagram: String,
-      twitter: String,
-      linkedin: String,
-      github: String,
-    },
+    socials: socialsSchema,
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<User>("User", userSchema);
 
 export default User;

@@ -10,6 +10,6 @@
     "rootDir": "./backend/src",
     "moduleResolution": "node"
   },
-  "include": ["backend/src/**/*"], // Include all TypeScript files in the backend/src directory
+  "include": ["backend/src/**/*"],
   "exclude": ["node_modules"]
 }
