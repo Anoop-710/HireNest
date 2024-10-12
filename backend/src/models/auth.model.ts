@@ -1,4 +1,3 @@
-/// models/user.ts
 import mongoose from "mongoose";
 import { User } from "../Interfaces/user.interface";
 
@@ -13,7 +12,7 @@ const experienceSchema = new mongoose.Schema({
 
 const educationSchema = new mongoose.Schema({
   school: String,
-  degree: String,
+  fieldOfStudy: String,
   startYear: Number,
   endYear: Number,
 });

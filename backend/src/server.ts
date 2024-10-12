@@ -24,7 +24,7 @@ app.use(express.json({ limit: "5mb" })); // parse JSON request bodies
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 //post routes
 app.use("/api/v1/posts", postRoutes);

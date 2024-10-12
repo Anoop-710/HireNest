@@ -49,8 +49,7 @@ const RecommendedUser: React.FC<PostProps> = ({ user }) => {
   const { mutate: acceptRequest } = useMutation({
     mutationFn: (requestId: string) =>
       axiosInstance.put(`/connections/accept/${requestId}`),
-    onSuccess: (data, variables) => {
-      console.log("Connection request accepted:", variables); // Log success with variables
+    onSuccess: () => {
       toast.success("Connection request accepted");
       queryClient.invalidateQueries({
         queryKey: ["connectionStatus", user._id],
@@ -58,7 +57,6 @@ const RecommendedUser: React.FC<PostProps> = ({ user }) => {
     },
     onError: (error) => {
       if (error instanceof AxiosError && error.response) {
-        console.error("Error accepting connection request:", error); // Log error
         toast.error(error.response.data.error);
       } else {
         toast.error("Error accepting connection request, please try again");

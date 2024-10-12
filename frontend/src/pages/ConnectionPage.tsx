@@ -10,9 +10,9 @@ interface ConnectionRequest {
   _id: string;
   name: string;
   username: string;
-  profilePicture: string;
-  headline: string;
-  connections: string[];
+  profilePicture: string; // Change to non-optional
+  headline: string; // Change to non-optional
+  connections: string[]; // Add this property
   sender: {
     username: string;
     profilePicture?: string;
@@ -23,6 +23,8 @@ interface ConnectionRequest {
 
 const ConnectionPage = () => {
   const { data: authUser } = useQuery<AuthUser>({ queryKey: ["authUser"] });
+
+  console.log(`authUser: ${{ authUser }}`);
 
   const { data: connectionRequests } = useQuery({
     queryKey: ["connectionRequests"],

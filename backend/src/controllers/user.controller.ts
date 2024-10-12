@@ -39,7 +39,7 @@ export const getSuggestedConnection = async (
   }
 };
 
-export const getUserProfile = async (
+export const getPublicProfile = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
@@ -53,7 +53,7 @@ export const getUserProfile = async (
       return;
     }
 
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     console.error(`Error in getUserProfile ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });

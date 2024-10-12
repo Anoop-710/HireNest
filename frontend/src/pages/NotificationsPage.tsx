@@ -40,6 +40,8 @@ interface RelatedPost {
 const NotificationsPage = () => {
   const { data: authUser } = useQuery<AuthUser>({ queryKey: ["authUser"] });
 
+  console.log(`authUser: ${authUser}`);
+
   const queryClient = useQueryClient();
 
   const { data: notifications, isLoading } = useQuery({

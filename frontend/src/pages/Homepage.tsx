@@ -4,21 +4,52 @@ import toast from "react-hot-toast";
 import Sidebar from "../components/Sidebar";
 import PostCreation from "../components/PostCreation";
 import { Users } from "lucide-react";
-import Post from "../components/Post";
+import PostComponent from "../components/Post";
 import RecommendedUser from "../components/RecommendedUser";
-import AuthUser from "../../interfaces/UserInterface";
-import IPost from "../../interfaces/PostInterface";
 
-interface RecommendedUser extends AuthUser {
+interface AuthUser {
   _id: string;
+  username: string;
+  name: string;
+  profilePicture?: string;
+  connections?: string[];
+  notifications?: Notification[];
+  followers?: number;
+  following?: number;
+  coverPicture?: string;
+  headline?: string;
+}
+
+interface Post {
+  _id: string;
+  author: AuthUser;
+  content: string;
+  image?: string;
+  likes: string[];
+  comments: Comment[];
+  createdAt: string;
+}
+
+interface Comment {
+  _id: string;
+  content: string;
+  user: AuthUser;
+  createdAt: Date;
+}
+
+interface RecommendedUser {
+  _id: string;
+  username: string;
+  name: string;
+  profilePicture?: string;
 }
 
 const Homepage: React.FC = () => {
-  const { data: authUser } = useQuery<AuthUser | undefined>({
+  const { data: authUser } = useQuery<AuthUser>({
     queryKey: ["authUser"],
     queryFn: async () => {
       try {
-        const res = await axiosInstance.get<AuthUser>("/auth/my-profile");
+        const res = await axiosInstance.get("/auth/my-profile");
         return res.data;
       } catch (error) {
         if (error instanceof Error) {
@@ -32,21 +63,18 @@ const Homepage: React.FC = () => {
   const { data: recommendedUsers } = useQuery<RecommendedUser[]>({
     queryKey: ["recommendedUsers"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/user/suggestions");
+      const res = await axiosInstance.get("/users/suggestions");
       return res.data;
     },
   });
 
-  const { data: posts } = useQuery<IPost[]>({
+  const { data: posts } = useQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: async () => {
-      const res = await axiosInstance.get<IPost[]>("/posts");
+      const res = await axiosInstance.get("/posts");
       return res?.data;
     },
   });
-
-  console.log("recommendedUsers", recommendedUsers);
-  console.log("posts", posts);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 my-auto">
@@ -57,9 +85,10 @@ const Homepage: React.FC = () => {
       <div className="col-span-1 lg:col-span-2 order-first lg:order-none mt-12">
         {authUser ? <PostCreation user={authUser} /> : null}
 
-        {posts?.map(
-          (post) =>
-            authUser && <Post key={post._id} post={post} authUser={authUser} />
+        {posts?.map((post) =>
+          authUser ? (
+            <PostComponent key={post._id} post={post} authUser={authUser} />
+          ) : null
         )}
 
         {posts?.length === 0 && (

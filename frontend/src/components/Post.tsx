@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import AuthUser from "../../interfaces/UserInterface";
 import { useState } from "react";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   LoaderCircle,
   MessageCircle,
@@ -13,25 +12,50 @@ import {
   ThumbsUp,
   Trash2,
 } from "lucide-react";
-import IPost from "../../interfaces/PostInterface";
+
 import PostAction from "./PostAction";
 import { v4 as uuidv4 } from "uuid";
 import { formatDistanceToNow } from "date-fns";
 
-interface PostProps {
-  post: IPost;
-  authUser: AuthUser;
+interface User {
+  _id: string;
+  name: string;
+  profilePicture?: string;
+  username: string;
+  headline?: string;
 }
 
-const Post: React.FC<PostProps> = ({ post }) => {
-  console.log(post);
+interface Comment {
+  _id: string;
+  content: string;
+  user: User;
+  createdAt: Date;
+}
 
-  const { data: authUser } = useQuery<AuthUser>({ queryKey: ["authUser"] });
+interface Post {
+  _id: string;
+  author: User;
+  content: string;
+  image?: string;
+  likes: string[];
+  comments: Comment[];
+  createdAt: string;
+}
+
+interface PostProps {
+  post: Post;
+  authUser: User;
+}
+
+const Post = ({ post }: PostProps) => {
+  const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const isOwner = authUser ? authUser._id === post.author._id : false; // Safely access _id
   const isLiked = authUser ? post.likes.includes(authUser._id) : false; // Safely check if liked
+
+  const { postId } = useParams();
 
   const queryClient = useQueryClient();
 
@@ -80,6 +104,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
     },
   });
 
@@ -108,12 +133,6 @@ const Post: React.FC<PostProps> = ({ post }) => {
             name: authUser?.name || "",
             profilePicture: authUser?.profilePicture || "",
             username: authUser?.username || "",
-            connections: authUser?.connections || "",
-            notifications: authUser?.notifications || "",
-            followers: authUser?.followers || 0,
-            following: authUser?.following || 0,
-            coverPicture: authUser?.coverPicture || "",
-            headline: authUser?.headline || "",
           },
           createdAt: new Date(),
         },

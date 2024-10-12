@@ -1,20 +1,9 @@
 import { Link } from "react-router-dom";
 import { Home, UserPlus, Bell } from "lucide-react";
-
-interface User {
-  username: string;
-  connections: string;
-  notifications: string;
-  followers: number;
-  following: number;
-  profilePicture: string;
-  coverPicture: string;
-  name: string;
-  headline: string;
-}
+import AuthUser from "../../interfaces/UserInterface";
 
 interface SidebarProps {
-  user: User;
+  user: AuthUser;
 }
 export default function Sidebar({ user }: SidebarProps) {
   return (
@@ -35,7 +24,7 @@ export default function Sidebar({ user }: SidebarProps) {
         </Link>
         <p className="text-info">{user.headline}</p>
         <p className="text-info text-xs">
-          {user.connections.length} connections
+          {user?.connections?.length} connections
         </p>
       </div>
       <div className="border-t border-base-100 p-4">

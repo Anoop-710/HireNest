@@ -9,6 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../lib/axios";
 import { AxiosError } from "axios";
 import NetworkPage from "./pages/ConnectionPage";
+import PostPage from "./pages/PostPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const { data: authUser, isLoading } = useQuery({
@@ -23,7 +25,7 @@ function App() {
           return null;
         }
 
-        // Extract message from error response data, assuming data is an object
+        // Extract message from error response data
         const errorMessage =
           (axiosError.response?.data as { message?: string })?.message ||
           "Something went wrong, please try again";
@@ -64,14 +66,15 @@ function App() {
             path="/network"
             element={authUser ? <NetworkPage /> : <Navigate to={"/login"} />}
           />
-          {/*  <Route
+          <Route
             path="/post/:postId"
             element={authUser ? <PostPage /> : <Navigate to={"/login"} />}
           />
+
           <Route
             path="/profile/:username"
             element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />}
-          /> */}
+          />
         </Routes>
 
         <Toaster />

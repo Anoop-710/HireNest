@@ -31,7 +31,7 @@ interface Experience {
 
 interface Education {
   school: string;
-  degree: string;
+  fieldOfStudy: string;
   startYear: number;
   endYear: number;
 }

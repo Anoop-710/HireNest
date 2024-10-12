@@ -4,25 +4,14 @@ import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { Image, Loader } from "lucide-react";
+import AuthUser from "../../Interface/UserInterface";
 interface PostData {
   content: string;
   image?: string;
 }
 
-interface User {
-  username: string;
-  connections: string;
-  notifications: string;
-  followers: number;
-  following: number;
-  profilePicture: string;
-  coverPicture: string;
-  name: string;
-  headline: string;
-}
-
 interface PostCreationProps {
-  user: User;
+  user: AuthUser;
 }
 const PostCreation = ({ user }: PostCreationProps) => {
   const [content, setContent] = useState<string>("");
