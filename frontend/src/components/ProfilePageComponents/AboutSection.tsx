@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AuthUser from "../../../Interface/UserInterface";
+import AuthUser from "../../Interface/UserInterface";
 
 interface AboutSectionProps {
   userData: AuthUser;

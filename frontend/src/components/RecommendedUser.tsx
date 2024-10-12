@@ -4,8 +4,9 @@ import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { Check, Clock, UserCheck, UserPlus, X } from "lucide-react";
-import AuthUser from "../../interfaces/UserInterface";
+
 import { AxiosError } from "axios";
+import AuthUser from "../Interface/UserInterface";
 
 interface PostProps {
   user: AuthUser;

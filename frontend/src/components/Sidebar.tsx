@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Home, UserPlus, Bell } from "lucide-react";
-import AuthUser from "../../interfaces/UserInterface";
+import AuthUser from "../Interface/UserInterface";
 
 interface SidebarProps {
   user: AuthUser;

@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { UserPlus } from "lucide-react";
 import ConnectionRequest from "../components/ConnectionRequest";
 import UserCard from "../components/UserCard";
-import AuthUser from "../../interfaces/UserInterface";
+import AuthUser from "../Interface/UserInterface";
 
 interface ConnectionRequest {
   _id: string;

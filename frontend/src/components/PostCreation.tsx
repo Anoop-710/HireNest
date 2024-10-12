@@ -4,7 +4,7 @@ import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { Image, Loader } from "lucide-react";
-import AuthUser from "../../Interface/UserInterface";
+import AuthUser from "../Interface/UserInterface";
 interface PostData {
   content: string;
   image?: string;

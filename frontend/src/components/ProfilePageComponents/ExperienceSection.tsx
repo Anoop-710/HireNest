@@ -1,7 +1,8 @@
 import { useState } from "react";
-import AuthUser from "../../../Interface/UserInterface";
+
 import { Briefcase, X } from "lucide-react";
 import { formatDate } from "../../utils/dateUtils";
+import AuthUser from "../../Interface/UserInterface";
 
 interface Experience {
   userData: AuthUser;

@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { formatDistanceToNow } from "date-fns";
-import AuthUser from "../../interfaces/UserInterface";
+import AuthUser from "../Interface/UserInterface";
 
 type NotificationType = "like" | "comment" | "connectionAccepted";
 

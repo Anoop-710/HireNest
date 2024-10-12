@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import AuthUser from "../../../Interface/UserInterface";
+
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { Camera, Clock, MapPin, UserCheck, UserPlus, X } from "lucide-react";
+import AuthUser from "../../Interface/UserInterface";
 
 interface ProfileHeaderProps {
   userData: AuthUser;

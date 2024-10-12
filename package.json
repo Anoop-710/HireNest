@@ -2,11 +2,12 @@
   "name": "hirenest",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "backend/server.ts",
   "scripts": {
     "dev": "nodemon --exec ts-node backend/src/server.ts",
     "start": "node dist/server.js",
-    "build": "tsc"
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend && npm run build:backend",
+    "build:backend": "tsc -p tsconfig.json"
   },
   "keywords": [],
   "author": "",

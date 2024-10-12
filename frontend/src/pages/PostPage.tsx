@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { axiosInstance } from "../../lib/axios";
 import Sidebar from "../components/Sidebar";
 import Post from "../components/Post";
-import AuthUser from "../../interfaces/UserInterface";
+import AuthUser from "../Interface/UserInterface";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -24,7 +24,7 @@ const PostPage = () => {
       </div>
 
       <div className="col-span-1 lg:col-span-3">
-        <Post post={post.data} authUser={authUser} />
+        {authUser && <Post post={post.data} authUser={authUser} />}
       </div>
     </div>
   );

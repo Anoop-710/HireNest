@@ -2,12 +2,13 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
-import AuthUser from "../../Interface/UserInterface";
+
 import ProfileHeader from "../components/ProfilePageComponents/ProfileHeader";
 import AboutSection from "../components/ProfilePageComponents/AboutSection";
 import ExperienceSection from "../components/ProfilePageComponents/ExperienceSection";
 import EducationSection from "../components/ProfilePageComponents/EducationSection";
 import SkillsSection from "../components/ProfilePageComponents/SkillsSection";
+import AuthUser from "../Interface/UserInterface";
 
 const ProfilePage = () => {
   const { username } = useParams();
