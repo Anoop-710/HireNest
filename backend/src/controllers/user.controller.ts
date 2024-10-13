@@ -76,6 +76,7 @@ export const updateUserProfile = async (
       "experience",
       "education",
       "socials",
+      "skills",
     ];
 
     const updatedData: UpdatedData = {};

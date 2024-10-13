@@ -48,11 +48,12 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             <Link to="/">
               <img
-                className="h-8 rounded"
-                src="/small-logo.png"
+                className="h-12 rounded"
+                src="https://res.cloudinary.com/dtjiwehvs/image/upload/c_thumb,w_200,g_face/v1728145653/HireNest-logo_frknmc.jpg"
                 alt="HireNest Logo"
               />
             </Link>
+            <h1 className="text-xl md:text-2xl font-bold">HireNest</h1>
           </div>
           <div className="flex items-center gap-2 md:gap-6">
             {authUser ? (

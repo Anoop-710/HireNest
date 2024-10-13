@@ -47,7 +47,7 @@ const SignUpPage = () => {
           }}
         >
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md shadow-md">
-            <div className="bg-white pb-8 px-4 shadow shadow-blue-300 sm:rounded-lg sm:px-10">
+            <div className="bg-white pb-8 px-4 shadow shadow-gray-400 sm:rounded-lg sm:px-10">
               <SignUpForm />
 
               <div className="mt-6">
