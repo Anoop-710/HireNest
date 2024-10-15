@@ -72,7 +72,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
   };
 
   if (!isOwnProfile) {
-    return null; // Hide the resume section if viewing another user's profile
+    return null;
   }
 
   return (
@@ -98,7 +98,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
             onChange={handleFileChange}
             disabled={isPending}
             className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-            ref={fileInputRef} // Attach the ref
+            ref={fileInputRef}
           />
         </form>
         <button
