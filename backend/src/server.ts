@@ -6,10 +6,12 @@ import userRoutes from "./routes/user.route";
 import postRoutes from "./routes/post.route";
 import notificationRoutes from "./routes/notification.routes";
 import connectionRoutes from "./routes/connection.route";
+
 import cors from "cors";
 import path from "path";
 
 import cookieParser from "cookie-parser";
+import upload from "./lib/multer";
 dotenv.config();
 
 const app = express();
@@ -24,6 +26,7 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ limit: "5mb" })); // parse JSON request bodies
 app.use(cookieParser());
 

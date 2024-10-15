@@ -14,6 +14,7 @@ interface AuthUser {
   experience?: Experience[];
   education?: Education[];
   skills?: string[];
+  resume?: string;
 }
 
 interface Experience {

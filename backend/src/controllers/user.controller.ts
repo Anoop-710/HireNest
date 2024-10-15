@@ -9,6 +9,20 @@ interface UpdatedData {
 type AuthenticatedRequest = Request & {
   user?: typeof User.prototype;
 };
+
+const uploadToCloudinary = async (fileBuffer: Buffer, options: any) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      options,
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+};
+
 export const getSuggestedConnection = async (
   req: AuthenticatedRequest,
   res: Response
@@ -77,6 +91,7 @@ export const updateUserProfile = async (
       "education",
       "socials",
       "skills",
+      "resume",
     ];
 
     const updatedData: UpdatedData = {};
@@ -88,7 +103,6 @@ export const updateUserProfile = async (
     }
 
     // Profile picture and cover picture
-
     if (req.body.profilePicture) {
       const result = await cloudinary.uploader.upload(req.body.profilePicture);
       updatedData.profilePicture = result.secure_url;
@@ -99,13 +113,24 @@ export const updateUserProfile = async (
       updatedData.coverPicture = result.secure_url;
     }
 
+    // Add user resume
+
+    if (req.file) {
+      const result: any = await uploadToCloudinary(req.file.buffer, {
+        resource_type: "raw",
+        format: "pdf",
+      });
+
+      updatedData.resume = result.secure_url;
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { $set: updatedData },
       { new: true }
     ).select("-password");
 
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     console.error(`Error in updateUserProfile ${(error as Error).message}`);
     res.status(500).json({ message: "Internal server error" });

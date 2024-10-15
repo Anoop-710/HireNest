@@ -8,6 +8,7 @@ export interface User extends Document {
   password: string;
   profilePicture?: string;
   coverPicture?: string;
+  resume?: string;
   headline?: string;
   location?: string;
   about?: string;

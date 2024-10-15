@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema<User>(
       type: String,
       default: "",
     },
+    resume: {
+      type: String,
+      default: "",
+    },
     headline: {
       type: String,
       default: "HireNest user",
@@ -71,6 +75,7 @@ const userSchema = new mongoose.Schema<User>(
     },
     experience: [experienceSchema],
     education: [educationSchema],
+
     connections: [
       {
         type: mongoose.Schema.Types.ObjectId,
