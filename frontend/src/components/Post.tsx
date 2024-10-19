@@ -146,6 +146,10 @@ const Post = ({ post }: PostProps) => {
   };
 
   const handleApplyClick = () => {
+    if (!authUser?.resume) {
+      toast.error("Please upload a resume before applying.");
+      return;
+    }
     setShowApplyModal(true);
   };
 
@@ -199,8 +203,8 @@ const Post = ({ post }: PostProps) => {
   };
 
   const handleApply = () => {
-    if (authUser?.resume === null) {
-      toast.error("Please upload your resume first");
+    if (!authUser?.resume) {
+      toast.error("Please upload a resume before applying.");
       return;
     }
     setShowApplyModal(false);
