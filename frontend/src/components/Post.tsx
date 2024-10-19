@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { Link, useParams } from "react-router-dom";
 import {
   LoaderCircle,
@@ -152,9 +152,9 @@ const Post = ({ post }: PostProps) => {
   const handleRestructure = async () => {
     try {
       setIsDownloading(true);
-      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.post(
-        `${apiUrl}/api/v1/restructure`,
+      // const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axiosInstance.post(
+        `/restructure`,
         {
           resumeUrl: authUser?.resume,
           jobDescription: post.content,
