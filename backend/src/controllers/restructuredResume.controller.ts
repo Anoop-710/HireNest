@@ -17,29 +17,29 @@ type AuthenticatedRequest = Request & {
 
 // Helper function to generate PDF from HTML content
 const generatePDF = async (htmlContent: string, outputPath: string) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-  // Set proper viewport size for A4
-  await page.setViewport({ width: 1123, height: 1587 });
+    await page.setViewport({ width: 1123, height: 1587 });
+    await page.setContent(htmlContent);
 
-  // Add content to the page
-  await page.setContent(htmlContent);
+    await page.pdf({
+      path: outputPath,
+      format: "A4",
+      printBackground: true,
+      margin: { top: "10mm", bottom: "10mm", left: "10mm", right: "10mm" },
+    });
 
-  // Generate PDF with optimized settings
-  await page.pdf({
-    path: outputPath,
-    format: "A4",
-    printBackground: true,
-    margin: {
-      top: "10mm",
-      bottom: "10mm",
-      left: "10mm",
-      right: "10mm",
-    },
-  });
-
-  await browser.close();
+    await browser.close();
+  } catch (error: string | any) {
+    console.error("Puppeteer PDF generation error:", {
+      message: error.message,
+      stack: error.stack,
+      details: error,
+    });
+    throw error; // Ensure the error bubbles up and gets handled in the catch block
+  }
 };
 
 export const restructureResume = async (
@@ -106,6 +106,11 @@ export const restructureResume = async (
       { resource_type: "raw" },
       async function (error, result) {
         if (error) {
+          console.error("Cloudinary upload error:", {
+            message: error.message,
+            stack: error.stack,
+            details: error,
+          });
           res
             .status(500)
             .json({ message: "Error uploading file to Cloudinary", error });
@@ -125,8 +130,21 @@ export const restructureResume = async (
         }
       }
     );
-  } catch (error) {
-    console.error("Error restructuring resume:", error);
-    res.status(500).json({ message: "Failed to restructure resume" });
+  } catch (error: string | any) {
+    console.error("Error restructuring resume:", {
+      message: error.message,
+      stack: error.stack,
+      additionalInfo: error.response?.data || error,
+    });
+    if (process.env.NODE_ENV !== "production") {
+      res.status(500).json({
+        message: "Failed to restructure resume",
+        error: error.message,
+        stack: error.stack,
+        additionalInfo: error.response?.data || error,
+      });
+    } else {
+      res.status(500).json({ message: "Failed to restructure resume" });
+    }
   }
 };

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { Link, useParams } from "react-router-dom";
 import {
   LoaderCircle,
@@ -176,9 +176,23 @@ const Post = ({ post }: PostProps) => {
         setIsRestructured(true);
         toast.success("Resume restructured successfully!");
       }
-    } catch (error) {
-      console.error("Error restructuring resume:", error);
-      toast.error("Failed to restructure resume.");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: string | any) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error restructuring resume:", {
+          message: error.message,
+          code: error.code,
+          responseData: error.response?.data || null,
+          request: error.request,
+          config: error.config,
+        });
+        toast.error(
+          error.response?.data?.message || "Failed to restructure resume."
+        );
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred.");
+      }
     } finally {
       setIsDownloading(false);
     }
