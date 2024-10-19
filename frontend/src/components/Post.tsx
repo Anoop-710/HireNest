@@ -185,6 +185,10 @@ const Post = ({ post }: PostProps) => {
   };
 
   const handleApply = () => {
+    if (authUser?.resume === null) {
+      toast.error("Please upload your resume first");
+      return;
+    }
     setShowApplyModal(false);
     toast.success(
       isRestructured

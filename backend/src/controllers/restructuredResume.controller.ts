@@ -104,7 +104,7 @@ export const restructureResume = async (
     cloudinary.uploader.upload(
       pdfPath,
       { resource_type: "raw" },
-      function (error, result) {
+      async function (error, result) {
         if (error) {
           res
             .status(500)
@@ -115,6 +115,13 @@ export const restructureResume = async (
             message: "Resume restructured and saved as PDF",
             pdfUrl: result?.secure_url,
           });
+
+          try {
+            // Delete the temporary file after successful upload
+            await unlinkFileAsync(pdfPath);
+          } catch (deleteError) {
+            console.error("Error deleting temporary PDF file:", deleteError);
+          }
         }
       }
     );
