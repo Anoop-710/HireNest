@@ -18,11 +18,7 @@ type AuthenticatedRequest = Request & {
 // Helper function to generate PDF from HTML content
 const generatePDF = async (htmlContent: string, outputPath: string) => {
   try {
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // Necessary for running Puppeteer in headless cloud environments
-      headless: true,
-      executablePath: process.env.CHROME_BIN || "/usr/bin/google-chrome-stable", // Ensure the correct path is set
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     await page.setViewport({ width: 1123, height: 1587 });

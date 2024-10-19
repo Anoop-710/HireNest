@@ -7,8 +7,7 @@
     "dev": "nodemon --exec ts-node backend/src/server.ts",
     "start": "node dist/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend && npm run build:backend",
-    "build:backend": "tsc -p tsconfig.json",
-    "postinstall": "npx puppeteer install"
+    "build:backend": "tsc -p tsconfig.json"
   },
   "keywords": [],
   "author": "",
