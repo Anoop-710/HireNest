@@ -6,12 +6,11 @@ import userRoutes from "./routes/user.route";
 import postRoutes from "./routes/post.route";
 import notificationRoutes from "./routes/notification.routes";
 import connectionRoutes from "./routes/connection.route";
-
+import resumeRestructureRoutes from "./routes/restructuredResume";
 import cors from "cors";
 import path from "path";
 
 import cookieParser from "cookie-parser";
-import upload from "./lib/multer";
 dotenv.config();
 
 const app = express();
@@ -41,6 +40,9 @@ app.use("/api/v1/notifications", notificationRoutes);
 
 // connection route
 app.use("/api/v1/connections", connectionRoutes);
+
+// resume restructuring route
+app.use("/api/v1/restructure", resumeRestructureRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

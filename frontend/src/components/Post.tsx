@@ -2,13 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { Link, useParams } from "react-router-dom";
 import {
   LoaderCircle,
   MessageCircle,
   Send,
-  Share2,
   ThumbsUp,
   Trash2,
 } from "lucide-react";
@@ -16,6 +15,7 @@ import {
 import PostAction from "./PostAction";
 import { v4 as uuidv4 } from "uuid";
 import { formatDistanceToNow } from "date-fns";
+import ApplyModal from "./Modal/ApplyModal";
 
 interface User {
   _id: string;
@@ -23,6 +23,7 @@ interface User {
   profilePicture?: string;
   username: string;
   headline?: string;
+  resume?: string;
 }
 
 interface Comment {
@@ -54,6 +55,10 @@ const Post = ({ post }: PostProps) => {
   const [comments, setComments] = useState(post.comments || []);
   const isOwner = authUser ? authUser._id === post.author._id : false; // Safely access _id
   const isLiked = authUser ? post.likes.includes(authUser._id) : false; // Safely check if liked
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [isRestructured, setIsRestructured] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [newResumeUrl, setNewResumeUrl] = useState<string | null>(null);
 
   const { postId } = useParams();
 
@@ -140,6 +145,52 @@ const Post = ({ post }: PostProps) => {
     }
   };
 
+  const handleApplyClick = () => {
+    setShowApplyModal(true);
+  };
+
+  const handleRestructure = async () => {
+    try {
+      setIsDownloading(true);
+      const response = await axios.post(
+        `${process.env.HOST_URL}/api/v1/restructure`,
+        {
+          resumeUrl: authUser?.resume,
+          jobDescription: post.content,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        setIsRestructured(true);
+        setNewResumeUrl(response.data.pdfUrl);
+        toast.success("Resume restructured successfully! Ready to apply!");
+      } else {
+        toast.error("Failed to restructure resume");
+      }
+
+      // If restructure was successful, update the state
+      if (response.data.pdfUrl) {
+        setIsRestructured(true);
+        toast.success("Resume restructured successfully!");
+      }
+    } catch (error) {
+      console.error("Error restructuring resume:", error);
+      toast.error("Failed to restructure resume.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleApply = () => {
+    setShowApplyModal(false);
+    toast.success(
+      isRestructured
+        ? "Application sent with restructured resume!"
+        : "Application sent with original resume!"
+    );
+  };
   return (
     <div className="bg-secondary rounded-lg shadow mb-4">
       <div className="p-4">
@@ -208,7 +259,51 @@ const Post = ({ post }: PostProps) => {
             text={`Comment (${comments.length})`}
             onClick={() => setShowComments(!showComments)}
           />
-          <PostAction icon={<Share2 size={18} />} text="Share" />
+          <button
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300"
+            onClick={handleApplyClick}
+          >
+            Apply
+          </button>
+          {showApplyModal && (
+            <ApplyModal onClose={() => setShowApplyModal(false)}>
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">Resume Options</h3>
+                <p className="text-sm mb-4">
+                  Would you like to restructure your resume before applying?
+                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <button
+                    onClick={handleRestructure}
+                    className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+                    disabled={isDownloading}
+                  >
+                    {isDownloading ? "Restructuring..." : "Build AI Resume"}
+                  </button>
+                  {isRestructured && newResumeUrl && (
+                    <a
+                      href={newResumeUrl}
+                      download
+                      className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+                    >
+                      Download Resume
+                    </a>
+                  )}
+
+                  {isRestructured ? (
+                    <div></div>
+                  ) : (
+                    <button
+                      onClick={handleApply}
+                      className="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 border-b-4 border-gray-700 hover:border-gray-500 rounded"
+                    >
+                      Apply directly
+                    </button>
+                  )}
+                </div>
+              </div>
+            </ApplyModal>
+          )}
         </div>
       </div>
 
