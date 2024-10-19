@@ -152,7 +152,7 @@ const Post = ({ post }: PostProps) => {
   const handleRestructure = async () => {
     try {
       setIsDownloading(true);
-      // const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
       const response = await axiosInstance.post(
         `/restructure`,
         {
@@ -285,7 +285,7 @@ const Post = ({ post }: PostProps) => {
                     <a
                       href={newResumeUrl}
                       download
-                      className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+                      className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded text-center"
                     >
                       Download Resume
                     </a>
