@@ -153,7 +153,7 @@ const Post = ({ post }: PostProps) => {
     try {
       setIsDownloading(true);
       const response = await axios.post(
-        `${process.env.HOST_URL}/api/v1/restructure`,
+        `${process.env.HOST_URL}/restructure`,
         {
           resumeUrl: authUser?.resume,
           jobDescription: post.content,
