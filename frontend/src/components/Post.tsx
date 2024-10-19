@@ -152,8 +152,9 @@ const Post = ({ post }: PostProps) => {
   const handleRestructure = async () => {
     try {
       setIsDownloading(true);
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
       const response = await axios.post(
-        `http://localhost:${process.env.PORT}/api/v1restructure`,
+        `${apiUrl}/api/v1/restructure`,
         {
           resumeUrl: authUser?.resume,
           jobDescription: post.content,
