@@ -5,7 +5,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import { promisify } from "util";
-import puppeteer from "puppeteer"; // Import Puppeteer for PDF generation
+import PDFDocument from "pdfkit"; // Import PDFKit
 import cloudinary from "../lib/cloudinary";
 
 const writeFileAsync = promisify(fs.writeFile);
@@ -15,31 +15,28 @@ type AuthenticatedRequest = Request & {
   user?: typeof User.prototype;
 };
 
-// Helper function to generate PDF from HTML content
-const generatePDF = async (htmlContent: string, outputPath: string) => {
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+// Helper function to generate PDF from text content
+const generatePDF = (content: string, outputPath: string) => {
+  return new Promise<void>((resolve, reject) => {
+    const doc = new PDFDocument();
+    const writeStream = fs.createWriteStream(outputPath);
 
-    await page.setViewport({ width: 1123, height: 1587 });
-    await page.setContent(htmlContent);
-
-    await page.pdf({
-      path: outputPath,
-      format: "A4",
-      printBackground: true,
-      margin: { top: "10mm", bottom: "10mm", left: "10mm", right: "10mm" },
+    writeStream.on("finish", () => {
+      resolve(); // Resolve the promise when the PDF is written
     });
 
-    await browser.close();
-  } catch (error: string | any) {
-    console.error("Puppeteer PDF generation error:", {
-      message: error.message,
-      stack: error.stack,
-      details: error,
+    writeStream.on("error", (error) => {
+      console.error("PDF write error:", error);
+      reject(error); // Reject the promise on error
     });
-    throw error; // Ensure the error bubbles up and gets handled in the catch block
-  }
+
+    doc.pipe(writeStream);
+
+    // Add content to PDF
+    doc.fontSize(12).text(content, { align: "left" });
+
+    doc.end(); // Finalize the PDF and end the stream
+  });
 };
 
 export const restructureResume = async (
@@ -80,25 +77,11 @@ export const restructureResume = async (
       jobDescription
     );
 
-    // Parse the tailored resume content into a structured format
-    const htmlContent = `
-    <html>
-    <head>
-      <style>
-        /* Add CSS styling here to format the resume */
-      </style>
-    </head>
-    <body>
-      <pre style="white-space: pre-wrap;">${tailoredResume}</pre>
-      <!-- Add more sections based on tailoredResume data -->
-    </body>
-    </html>
-  `;
     // Define path to save the PDF
     const pdfPath = path.join(__dirname, "tailoredResume.pdf");
 
-    // Generate the PDF from HTML content
-    await generatePDF(htmlContent, pdfPath);
+    // Generate the PDF from the tailored resume content
+    await generatePDF(tailoredResume, pdfPath);
 
     // Upload to Cloudinary
     cloudinary.uploader.upload(
