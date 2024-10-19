@@ -28,10 +28,10 @@ export const generateContent = async (
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const requests = [
-      "Can you please restructure the Experience and Projects sections to align with the provided job description while keeping other sections unchanged.",
-      "Please tailor the Experience and Projects sections to match the following job description without altering the other parts.",
-      "Can you revise only the Experience and Projects sections based on this job description while preserving the rest of the resume as is.",
-      "Kindly modify the Experience and Projects sections to suit this job description, leaving other sections untouched.",
+      "Can you please restructure the Experience and Projects sections to align with the provided job description.",
+      "Please tailor the Experience and Projects sections to match the following job description.",
+      "Can you revise only the Experience and Projects sections based on this job description.",
+      "Kindly modify the Experience and Projects sections to suit this job description.",
     ];
     const randomRequest = requests[Math.floor(Math.random() * requests.length)];
 
